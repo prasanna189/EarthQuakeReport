@@ -27,14 +27,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     ProgressDialog progressDialog;
     private static final String USGS_REQUEST_URL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2005-01-01&endtime=2017-08-14&minfelt=50&minmagnitude=5";
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=50";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +71,12 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>> {
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            // TODO: make progressDialog to show completion percentage
             progressDialog = new ProgressDialog(EarthquakeActivity.this);
             progressDialog.setTitle("Getting earthquake data");
             progressDialog.setMessage("Downloading...");
@@ -85,7 +86,7 @@ public class EarthquakeActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<Earthquake> doInBackground(String... urls) {
+        protected List<Earthquake> doInBackground(String... urls) {
 
             //return null if there is no URL
             if(urls.length < 1 || urls[0] == null){
@@ -98,7 +99,7 @@ public class EarthquakeActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
+        protected void onPostExecute(List<Earthquake> earthquakes) {
             // Update the information displayed to the user.
             if(earthquakes == null){
                 return;
@@ -108,7 +109,7 @@ public class EarthquakeActivity extends AppCompatActivity {
         }
     }
 
-    void updateUI(ArrayList<Earthquake> earthquakes){
+    void updateUI(List<Earthquake> earthquakes){
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         // Find a reference to the {@link ListView} in the layout
