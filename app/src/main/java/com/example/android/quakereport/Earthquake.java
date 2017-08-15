@@ -14,7 +14,7 @@ class Earthquake{
         this.url = url;
     }
 
-    public String getUrl() {
+    String getUrl() {
         return url;
     }
 
