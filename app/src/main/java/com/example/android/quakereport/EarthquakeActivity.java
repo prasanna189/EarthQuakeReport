@@ -15,6 +15,7 @@
  */
 package com.example.android.quakereport;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -31,8 +32,9 @@ import java.util.ArrayList;
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    ProgressDialog progressDialog;
     private static final String USGS_REQUEST_URL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2010-01-01&endtime=2017-08-14&minfelt=50&minmagnitude=5";
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2005-01-01&endtime=2017-08-14&minfelt=50&minmagnitude=5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,12 @@ public class EarthquakeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog = new ProgressDialog(EarthquakeActivity.this);
+            progressDialog.setTitle("Getting earthquake data");
+            progressDialog.setMessage("Downloading...");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -96,6 +104,7 @@ public class EarthquakeActivity extends AppCompatActivity {
                 return;
             }
             updateUI(earthquakes);
+            progressDialog.dismiss();
         }
     }
 
