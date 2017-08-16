@@ -17,14 +17,18 @@ package com.example.android.quakereport;
 
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,11 +128,45 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     }
 
     void displayProgressDialog(){
+        //Todo: do proper implementation of progressDialog
         progressDialog = new ProgressDialog(EarthquakeActivity.this);
         progressDialog.setMessage("Getting earthquake data");
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(true);
         progressDialog.show();
+    }
+
+    //function for handling the back button on main activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            System.exit(0);
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+
+                        case DialogInterface.BUTTON_NEUTRAL:
+                            FeedbackHelper.sendFeedback(EarthquakeActivity.this);
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Exit the app?").setPositiveButton("EXIT", dialogClickListener)
+                    .setNegativeButton("CANCEL", dialogClickListener).setNeutralButton("SEND FEEDBACK", dialogClickListener).show();
+
+            Toast.makeText(EarthquakeActivity.this,"We would love to get your feedback!",Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }
